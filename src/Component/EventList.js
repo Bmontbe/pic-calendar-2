@@ -1,6 +1,6 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Fragment, Component, useState, useEffect } from 'react';
+import { Form, Modal, Button } from 'semantic-ui-react';
 import Event from './Event';
-import Form from './FormCalendar'
 import axios from 'axios';
 import './EventList.css';
 import moment from 'moment';
@@ -14,6 +14,7 @@ function EventList(props) {
 
   const [events, setEvents] = useState([]);
   const [eventsPassed, setEventsPassed] = useState([])
+  const [modal, setModal] = useState(false)
 
   //GET
   useEffect(() => {
@@ -76,9 +77,11 @@ function EventList(props) {
     console.log(new Date().getMilliseconds())
   }
 
-  // const removeTemp = (index) => {
-
-  // }
+  const changeEvent = (index) => {
+    props.dispatch({ type: 'INDEX_CHANGE', payload: index })
+    setModal(true)
+    console.log(index)
+  }
 
   return (
     <div>
@@ -94,10 +97,64 @@ function EventList(props) {
               key={index}
               index={index}
               removeEvent={removeEvent}
+              changeEvent={changeEvent}
             />
           )) : ""}
         </div>
       </div>
+      <Fragment>
+      {modal &&
+      <Form>
+      <Modal defaultOpen={true} dimmer={"blurring"} className='modalPicture'>
+  
+        <Form.Group widths='equal'>
+          <Form.Input
+            fluid
+            id='form-subcomponent-shorthand-input-first-name'
+            type="text"
+            label="Nom de l'évènement"
+            value={events[props.event.indexChange].event}
+            // onChange={handleEvent}
+            placeholder="Evènement!"
+          />
+          <Form.Input
+            fluid
+            id='form-subcomponent-shorthand-input-last-name'
+            type="date"
+            label="Date de l'évènement"
+            value={moment(events[props.event.indexChange].date_event).format("YYYY-MM-DD")}
+            // onChange={handleDate_Event}
+            placeholder="Date évènement"
+          />
+        </Form.Group>
+        <Form.Group widths='equal'>
+          <Form.Input
+            fluid
+            id='form-subcomponent-shorthand-input-first-name'
+            type="text"
+            label="Commentaire"
+            value={events[props.event.indexChange].comment}
+            // onChange={handleComment}
+            placeholder="Commentaire!"
+          />
+          {/* {picture ? <img className='picEvent' src={props.event.imgsrc} /> : <button class="ui button" onClick={toggleModal}>Ajouter une photo</button>} */}
+          {/* {question &&
+            <Modal defaultOpen={true} dimmer={"blurring"} className='modalPicture'>
+              <Modal.Header>Photo de l'évènement</Modal.Header>
+              <Modal.Description className='pictureDescription'>
+                <Cam />
+                <Button className='closeModalQuestion' onClick={validate}>Fermer</Button>
+              </Modal.Description>
+            </Modal>} */}
+        </Form.Group>
+        <button
+          class="ui button"
+          onClick={() => setModal(!modal)}>
+          Enregistrer
+      </button>
+      </Modal>
+      </Form>}
+      </Fragment>
     </div>
   );
 }
