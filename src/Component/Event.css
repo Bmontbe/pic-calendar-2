@@ -1,0 +1,32 @@
+.cardEvent {
+  justify-content: center !important;
+  align-items: center;
+  margin-right: 3px;
+  margin-left: 3px;
+  margin-top:20px;
+  color:black;
+}
+
+.event {
+  margin-top: 4px;
+  margin-bottom : 4px;
+  color:green;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.date_event {
+  color: grey;
+  font-style: italic;
+}
+
+.picture{
+  color : grey;
+  font-size: 10px;
+}
+
+.comment{
+  margin-top: 4px;
+  margin-bottom : 4px;
+  color:blue;
+}

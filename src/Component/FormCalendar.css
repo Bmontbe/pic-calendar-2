@@ -1,0 +1,11 @@
+.modalPicture{
+  height: 500px;
+  width: 500px !important;
+  margin-left:32% !important;
+  margin-top:10% !important;
+}
+
+.picEvent{
+  height: 80px;
+  width: auto;
+}
