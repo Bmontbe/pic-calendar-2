@@ -36,12 +36,17 @@ function EventList(props) {
   }, []);
 
   useEffect(() => {
+    setEvents([...props.event.listevent, props.event.addevent].sort(compare));
+    props.dispatch({ type: 'LISTEVENT', payload: [...props.event.listevent, props.event.addevent] })
+  }, [props.event.addevent]);
+
+  useEffect(() => {
     let temp = [...events];
     temp = _.filter(temp, (event) => {
       return moment(event.date_event).format('x') < Date.now();
     })
     props.dispatch({ type: 'LIST_PASSED', payload: temp })
-  })
+  }, [events])
 
   useEffect(() => {
     let temp = [...events];
@@ -50,13 +55,9 @@ function EventList(props) {
     })
     props.dispatch({ type: 'LIST_CURRENT', payload: temp })
     setEventsCurrent(temp)
-  })
+  }, [events])
 
-  useEffect(() => {
-    setEvents([...props.event.listevent, props.event.addevent].sort(compare));
-    props.dispatch({ type: 'LISTEVENT', payload: [...props.event.listevent, props.event.addevent] })
 
-  }, [props.event.addevent]);
 
   const compare = (a, b) => {
     const dateA = a.date_event;
@@ -84,21 +85,19 @@ function EventList(props) {
       });
     console.log("l'id est " + events[index].id);
 
-    let eventsTemp = [...events];
+    let eventsTemp = [...eventsCurrent];
     eventsTemp.splice(index, 1);
-    setEvents(eventsTemp);
-    props.dispatch({ type: 'LISTEVENT', payload: eventsTemp })
-    console.log("l'index est " + index);
-    console.log(new Date().getMilliseconds())
+    setEventsCurrent(eventsTemp);
+    props.dispatch({ type: 'LIST_CURRENT', payload: eventsTemp })
   }
 
   const changeEvent = (index) => {
     props.dispatch({ type: 'INDEX_CHANGE', payload: index })
     setModal(true)
-    setEvent(props.event.listevent[index].event)
-    setDateEvent(moment(props.event.listevent[index].date_event).format("YYYY-MM-DD"))
-    setPicture(props.event.listevent[index].picture)
-    setComment(props.event.listevent[index].comment)
+    setEvent(eventsCurrent[index].event)
+    setDateEvent(moment(eventsCurrent[index].date_event).format("YYYY-MM-DD"))
+    setPicture(eventsCurrent[index].picture)
+    setComment(eventsCurrent[index].comment)
   }
 
   const changePicture = () => {
@@ -121,13 +120,12 @@ function EventList(props) {
         picture: picture,
         comment: comment,
       };
-      const newList = [...events];
+      const newList = [...eventsCurrent];
       newList.splice(props.event.indexChange, 1, inputChangeValues);
-      setEvents(newList);
-      setEvent('');
-      props.dispatch({ type: 'LISTEVENT', payload: newList })
+      setEventsCurrent(newList);
+      console.log(eventsCurrent)
       console.log(events[props.event.indexChange].id)
-
+      props.dispatch({ type: 'LIST_CURRENT', payload: newList })
       const url = `http://localhost:3000/api/events/${events[props.event.indexChange].id}`;
         axios.put(url, inputChangeValues)
                 .then(res => {

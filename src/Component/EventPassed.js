@@ -14,6 +14,7 @@ const EventPassed = props => (
       <Image className="picture" src={props.picture} alt="pic_event" />
       <Card.Description className="comment">{props.comment}</Card.Description>
       <Button onClick={() => props.removeEvent(props.index)}> Supprimer </Button>
+      <Button onClick={() => props.changeEvent(props.index)}> Modifier </Button>
     </Card>
   </div>
 )

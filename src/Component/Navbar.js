@@ -34,10 +34,6 @@ function Navbar(props) {
           <Link to={`${process.env.PUBLIC_URL}/evenements_passés`} className='linkNavbar' href="#">Passées</Link>
         </Menu.Item>
 
-        <Menu.Item name='Supprimés' active={activeItem === 'Supprimés'} onClick={e => handleItemClick(e, 'Supprimés')}>
-          <Label>1</Label>
-          Supprimés
-        </Menu.Item>
         {/* <Menu.Item className='ui right aligned category search item'>
           <Input icon='search' placeholder='Search event...' />
         </Menu.Item> */}
