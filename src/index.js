@@ -14,10 +14,12 @@ import imgSrcReducer from './Reducers/imgSrcReducer';
 import listEventReducer from './Reducers/listEventReducer';
 import eventPassedReducer from './Reducers/eventPassedReducer';
 import indexChangeReducer from './Reducers/indexChangeReducer';
+import eventCurrentReducer from './Reducers/eventCurrentReducer';
 
 const allReducers = combineReducers({
   listevent: listEventReducer,
   listPassedevent: eventPassedReducer,
+  listCurrentevent: eventCurrentReducer,
   indexChange : indexChangeReducer,
   addevent: eventReducer,
   modal: modalReducer,

@@ -6,7 +6,6 @@ function Cam(props) {
   let webcam;
 
   const [gallery, setGallery] = useState([]);
-  const [capturePhoto, setCapturePhoto] = useState(false)
 
   const setRef = cam => {
     webcam = cam;
@@ -18,7 +17,6 @@ function Cam(props) {
     console.log(imageSrc)
     props.dispatch({ type: 'TOGGLE_MODAL' });
     props.dispatch({ type: 'ADD_SRC_IMG', payload: imageSrc })
-    setCapturePhoto(true)
     // props.isOpen(true)
   };
 
@@ -30,10 +28,10 @@ function Cam(props) {
   return (
     <div>
       {
-        capturePhoto
+        props.event.imgsrc
           ? (
             <div>
-              <img src={gallery[0]} />
+              <img src={props.event.imgsrc} />
               <p>nom de votre photo : {props.event.imgsrc.slice(-20)}</p>
             </div>
           ) :

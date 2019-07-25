@@ -58,6 +58,21 @@ app.delete('/api/events/:id', (req, res) => {
   });
 });
 
+app.put('/api/events/:id', (req, res) => {
+  console.log(req.body, req.params);
+  const idEvent = req.params.id;
+  const sql = `UPDATE event SET ? WHERE id = ${idEvent}`;
+  const formData = req.body;
+  connection.query(sql, [formData], (err, results) =>{
+    if (err){
+      console.log(err);
+      res.status(500).send('erreur de modif title et desc');
+    } else {
+      res.json(results);
+    }
+  });
+ });
+
 app.listen(port, (err) => {
   if (err) {
     throw new Error('Something bad happened...');

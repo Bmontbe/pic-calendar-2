@@ -1,4 +1,4 @@
-const indexChangeReducer = (state = 0, action) => {
+const indexChangeReducer = (state = '', action) => {
   if(action.type === 'INDEX_CHANGE') {
     return action.payload
   }

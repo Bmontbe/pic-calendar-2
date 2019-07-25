@@ -15,6 +15,7 @@ function Navbar(props) {
   }
 
 
+
   return (
     <div>
       <Zoom>
@@ -24,7 +25,7 @@ function Navbar(props) {
       </Zoom>
       <Menu horizontal>
         <Menu.Item name='En Cours' active={activeItem === 'En Cours'} onClick={e => handleItemClick(e, 'En Cours')}>
-          <Label color='teal'>{props.event.listevent.length}</Label>
+          <Label color='teal'>{props.event.listCurrentevent.length}</Label>
           <Link to={`${process.env.PUBLIC_URL}/`} className='linkNavbar' href="#">En cours</Link>
         </Menu.Item>
 

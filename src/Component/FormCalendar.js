@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Modal, Button } from 'semantic-ui-react';
 import Cam from './Cam';
 import axios from 'axios';
-import './EventList.css';
 import moment from 'moment';
 import 'moment/locale/fr';
 import { connect } from 'react-redux';
+import _ from 'underscore';
 import './FormCalendar.css';
+
 
 moment.locale('fr');
 
 function FormCalendar(props) {
 
-  const [events, setEvents] = useState([]);
   const [comment, setComment] = useState('');
   const [picture, setPicture] = useState('');
   const [date_event, setDate_Event] = useState('');
   const [event, setEvent] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
   const [question, setQuestion] = useState(false);
   const [clickValidate, setClickValidate] = useState(false);
+
 
   const handleComment = (e) => {
     setComment(e.target.value)
@@ -60,9 +60,8 @@ function FormCalendar(props) {
       .catch(error => {
         console.log(error);
       });
-
     props.dispatch({ type: 'ADDEVENT', payload: inputEvent })
-
+    props.dispatch({ type: 'ADD_SRC_IMG', payload: '' })
     setEvent('');
     setDate_Event('');
     setPicture('');

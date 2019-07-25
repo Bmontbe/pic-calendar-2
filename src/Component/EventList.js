@@ -7,16 +7,23 @@ import moment from 'moment';
 import 'moment/locale/fr';
 import { connect } from 'react-redux';
 import _ from 'underscore';
+import FormCalendar from '../Component/FormCalendar';
+
+import Cam from './Cam';
 
 moment.locale('fr');
 
 function EventList(props) {
 
   const [events, setEvents] = useState([]);
-  const [eventsPassed, setEventsPassed] = useState([])
+  const [eventsCurrent, setEventsCurrent] = useState([]);
   const [modal, setModal] = useState(false)
+  const [event, setEvent] = useState('')
+  const [dateEvent, setDateEvent] = useState('')
+  const [comment, setComment] = useState('')
+  const [picture, setPicture] = useState('')
+  const [question, setQuestion] = useState(false);
 
-  //GET
   useEffect(() => {
     var url = 'http://localhost:3000/api/events';
     axios.get(url)
@@ -33,8 +40,16 @@ function EventList(props) {
     temp = _.filter(temp, (event) => {
       return moment(event.date_event).format('x') < Date.now();
     })
-    setEventsPassed(temp);
     props.dispatch({ type: 'LIST_PASSED', payload: temp })
+  })
+
+  useEffect(() => {
+    let temp = [...events];
+    temp = _.filter(temp, (event) => {
+      return moment(event.date_event).format('x') > Date.now();
+    })
+    props.dispatch({ type: 'LIST_CURRENT', payload: temp })
+    setEventsCurrent(temp)
   })
 
   useEffect(() => {
@@ -80,14 +95,57 @@ function EventList(props) {
   const changeEvent = (index) => {
     props.dispatch({ type: 'INDEX_CHANGE', payload: index })
     setModal(true)
-    console.log(index)
+    setEvent(props.event.listevent[index].event)
+    setDateEvent(moment(props.event.listevent[index].date_event).format("YYYY-MM-DD"))
+    setPicture(props.event.listevent[index].picture)
+    setComment(props.event.listevent[index].comment)
   }
 
+  const changePicture = () => {
+    setPicture(props.event.imgsrc)
+    setQuestion(true)
+    console.log(setPicture)
+    props.dispatch({ type: 'TOGGLE_MODAL' })
+    props.dispatch({ type: 'ADD_SRC_IMG', payload: '' })
+  }
+
+  const validate = () => {
+    setQuestion(!question)
+    setPicture(props.event.imgsrc)
+  }
+
+  const updateInputValue = () => {
+      const inputChangeValues = {
+        event:event,
+        date_event: dateEvent,
+        picture: picture,
+        comment: comment,
+      };
+      const newList = [...events];
+      newList.splice(props.event.indexChange, 1, inputChangeValues);
+      setEvents(newList);
+      setEvent('');
+      props.dispatch({ type: 'LISTEVENT', payload: newList })
+      console.log(events[props.event.indexChange].id)
+
+      const url = `http://localhost:3000/api/events/${events[props.event.indexChange].id}`;
+        axios.put(url, inputChangeValues)
+                .then(res => {
+                  console.log(res);
+                })
+                .catch(error => {
+                  console.log(error);
+                });
+
+    setModal(!modal)
+    
+  };
+
   return (
-    <div>
+    <div class="listEvent">
       <div className="mb-4 mr-6 ml-6">
         <div className="row justify-content-center">
-          {events ? events.map((event, index) => (
+          {eventsCurrent ? eventsCurrent.map((event, index) => (
             <Event
               id={event.id}
               event={event.event}
@@ -113,8 +171,9 @@ function EventList(props) {
             id='form-subcomponent-shorthand-input-first-name'
             type="text"
             label="Nom de l'évènement"
-            value={events[props.event.indexChange].event}
-            // onChange={handleEvent}
+            defaultValue={event}
+            // Value={events[props.event.indexChange].event}
+            onChange={(e) => (setEvent(e.target.value))}
             placeholder="Evènement!"
           />
           <Form.Input
@@ -122,8 +181,8 @@ function EventList(props) {
             id='form-subcomponent-shorthand-input-last-name'
             type="date"
             label="Date de l'évènement"
-            value={moment(events[props.event.indexChange].date_event).format("YYYY-MM-DD")}
-            // onChange={handleDate_Event}
+            defaultValue={dateEvent}
+            onChange={(e) => (setDateEvent(e.target.value))}
             placeholder="Date évènement"
           />
         </Form.Group>
@@ -133,23 +192,23 @@ function EventList(props) {
             id='form-subcomponent-shorthand-input-first-name'
             type="text"
             label="Commentaire"
-            value={events[props.event.indexChange].comment}
-            // onChange={handleComment}
+            defaultValue={comment}
+            onChange={(e) => (setComment(e.target.value))}
             placeholder="Commentaire!"
           />
-          {/* {picture ? <img className='picEvent' src={props.event.imgsrc} /> : <button class="ui button" onClick={toggleModal}>Ajouter une photo</button>} */}
-          {/* {question &&
+          <img className='picEvent' src={picture} /> <button class="ui button" onClick={changePicture}>Changer la photo une photo</button>
+          {question &&
             <Modal defaultOpen={true} dimmer={"blurring"} className='modalPicture'>
               <Modal.Header>Photo de l'évènement</Modal.Header>
               <Modal.Description className='pictureDescription'>
                 <Cam />
                 <Button className='closeModalQuestion' onClick={validate}>Fermer</Button>
               </Modal.Description>
-            </Modal>} */}
+            </Modal>}
         </Form.Group>
         <button
           class="ui button"
-          onClick={() => setModal(!modal)}>
+          onClick={updateInputValue}>
           Enregistrer
       </button>
       </Modal>
